@@ -80,33 +80,16 @@ All within a browser — no installation, no paid servers.
 ---
 
 ## 🧰 Architecture
-
-                    🧠 NeuroScale System Flow
- ┌───────────────────────────────────────────────┐
- │                User Browser                   │
- │        (Participant / Researcher)             │
- └──────────────────────────┬────────────────────┘
-                            │
-                            ▼
- ┌───────────────────────────────────────────────┐
- │       React + Builder.io Frontend             │
- │        (Drag-drop experiment UI)              │
- └──────────────────────────┬────────────────────┘
-                            │
-                            ▼
- ┌───────────────────────────────────────────────┐
- │          Supabase Edge Functions              │
- │        (APIs, Auth, Business Logic)           │
- └──────────────────────────┬────────────────────┘
-                            │
-                            ▼
-      ┌────────────┬────────────┬────────────┬────────────┬────────────┐
-      ▼            ▼            ▼            ▼            ▼
- ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐ ┌────────────┐
- │ PostgreSQL │ │ AWS Lambda │ │ Gemini API │ │ Cloudinary │ │ Blockchain │
- │ Experiments│ │  @Edge     │ │ AI Validity│ │   Media    │ │ Aptos + ETH│
- │ & Responses│ │ Latency Cal│ │  Checking  │ │  Storage   │ │ NFT + Proof│
- └────────────┘ └────────────┘ └────────────┘ └────────────┘ └────────────┘
+| Layer                    | Technology Used             | Function                                                                     |
+| :----------------------- | :-------------------------- | :--------------------------------------------------------------------------- |
+| 🧑‍💻 **User Interface** | React.js + Builder.io       | No-code drag-and-drop experiment builder and participant UI                  |
+| ⚙️ **Backend Logic**     | Supabase Edge Functions     | Handles APIs, authentication, and business logic                             |
+| 🗃️ **Database**         | Supabase (PostgreSQL)       | Stores experiments, participant data, and response metrics                   |
+| ⚡ **Latency Engine**     | AWS Lambda@Edge             | Calibrates timing and ensures sub-10 ms precision for experiments            |
+| 🧠 **AI Layer**          | Gemini API                  | Validates participant attention and detects bot-like behavior                |
+| ☁️ **Media Storage**     | Cloudinary                  | Stores images, audio, and other experiment stimuli                           |
+| ⛓️ **Blockchain Layer**  | Aptos + Ethereum (Testnets) | Generates NFT certificates (Aptos) and proof-of-experiment hashes (Ethereum) |
+| 🔒 **Security Layer**    | JWT + Supabase Auth         | Ensures secure access and encrypted experiment submissions                   |
 
 ---
 
