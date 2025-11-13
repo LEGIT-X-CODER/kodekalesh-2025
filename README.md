@@ -80,7 +80,6 @@ All within a browser — no installation, no paid servers.
 ---
 
 ## 🧰 Architecture
-'''
                   🧠 NeuroScale System Flow
 
 ┌──────────────────────────────┐
@@ -111,7 +110,7 @@ All within a browser — no installation, no paid servers.
                                                            │
                                                            ▼
                                             ⛓️ NFT + Proof Verification
-'''
+
 ---
 
 🔐 Security & Privacy
