@@ -82,7 +82,6 @@ All within a browser — no installation, no paid servers.
 ## 🧰 Architecture
 
                     🧠 NeuroScale System Flow
-
  ┌───────────────────────────────────────────────┐
  │                User Browser                   │
  │        (Participant / Researcher)             │
