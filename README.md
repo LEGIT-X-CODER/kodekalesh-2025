@@ -98,8 +98,8 @@ Supabase Edge Functions  ───►  PostgreSQL (Experiments + Responses)
    ├──► Aptos Testnet    →  NFT Certificates
    │
    └──► Ethereum Testnet →  Experiment Proof Hash
-   
 ---
+
 🔐 Security & Privacy
 
 🔒 Anonymous Participation — No personal data collected; participants use auto-generated IDs.
