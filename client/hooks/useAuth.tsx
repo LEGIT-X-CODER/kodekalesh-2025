@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
 
 type Role = "admin" | "user" | null;
@@ -8,6 +7,7 @@ type AuthContextValue = {
   user: { uid: string; email?: string | null; displayName?: string | null } | null;
   role: Role;
   signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 };
 
@@ -18,14 +18,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [role, setRole] = useState<Role>(null);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
-      if (u) {
-        setUser({ uid: u.uid, email: u.email, displayName: u.displayName });
-      } else {
-        setUser(null);
-      }
+    let unsub: () => void = () => {};
+    import("firebase/auth").then(({ onAuthStateChanged }) => {
+      unsub = onAuthStateChanged(auth, (u) => {
+        if (u) {
+          setUser({ uid: u.uid, email: u.email, displayName: u.displayName });
+        } else {
+          setUser(null);
+        }
+      });
     });
-    return () => unsub();
+    return () => unsub && unsub();
   }, []);
 
   useEffect(() => {
@@ -35,14 +38,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [user]);
 
   const signInWithGoogle = async () => {
+    const { signInWithPopup } = await import("firebase/auth");
     await signInWithPopup(auth, googleProvider);
   };
 
+  const signInWithEmail = async (email: string, password: string) => {
+    const { signInWithEmailAndPassword } = await import("firebase/auth");
+    await signInWithEmailAndPassword(auth, email, password);
+  };
+
   const logout = async () => {
+    const { signOut } = await import("firebase/auth");
     await signOut(auth);
   };
 
-  const value = useMemo(() => ({ user, role, signInWithGoogle, logout }), [user, role]);
+  const value = useMemo(() => ({ user, role, signInWithGoogle, signInWithEmail, logout }), [user, role]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
