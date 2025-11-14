@@ -16,6 +16,7 @@ import {
   Shield,
   Download,
   Users,
+  Link as LinkIcon,
 } from "lucide-react";
 
 export default function Features() {
@@ -498,7 +499,7 @@ export default function Features() {
           >
             {[
               {
-                icon: Link as any,
+                icon: LinkIcon,
                 title: "One-Click Experiment Links",
                 desc: "Generate shareable experiment links instantly. Custom URLs, analytics tracking, and participant flow management built-in.",
               },

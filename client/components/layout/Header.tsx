@@ -80,8 +80,7 @@ export function Header() {
           ))}
         </div>
 
-        {/* Right Side - Auth Buttons */}
-        <div className="flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-4">
           <motion.div
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.3 }}
@@ -110,16 +109,16 @@ export function Header() {
             </Link>
           </motion.div>
 
-          {/* Mobile Menu Button */}
-          <motion.button
-            className="md:hidden text-neon-teal"
-            onClick={() => setIsOpen(!isOpen)}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </motion.button>
+          
         </div>
+        <motion.button
+          className="md:hidden text-neon-teal"
+          onClick={() => setIsOpen(!isOpen)}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
+        </motion.button>
       </nav>
 
       {/* Mobile Navigation */}
@@ -148,6 +147,32 @@ export function Header() {
                 </Link>
               </motion.div>
             ))}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: navItems.length * 0.1 }}
+            >
+              <Link
+                to="/login"
+                onClick={() => setIsOpen(false)}
+                className="text-muted-foreground hover:text-neon-teal transition-colors font-mono"
+              >
+                Login
+              </Link>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: navItems.length * 0.1 + 0.1 }}
+            >
+              <Link
+                to="/dashboard"
+                onClick={() => setIsOpen(false)}
+                className="px-4 py-2 rounded bg-neon-teal text-black font-mono font-semibold text-sm hover:shadow-glow transition-all duration-300 inline-block"
+              >
+                Get Started
+              </Link>
+            </motion.div>
           </div>
         </motion.div>
       )}
