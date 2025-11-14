@@ -9,6 +9,7 @@ export function Header() {
 
   const navItems = [
     { label: "Home", href: "/" },
+    { label: "Features", href: "/features" },
     { label: "Dashboard", href: "/dashboard" },
     { label: "Builder", href: "/builder" },
     { label: "Results", href: "/results" },
