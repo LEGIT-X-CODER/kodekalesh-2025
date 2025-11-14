@@ -1,10 +1,19 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const { user, role, signInWithGoogle } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate(role === "admin" ? "/admin" : "/dashboard");
+    }
+  }, [user, role, navigate]);
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-6">
@@ -65,9 +74,11 @@ export default function Login() {
             </Link>
           </div>
 
-          {/* Sign In Button */}
-          <button className="w-full px-4 py-3 rounded bg-neon-teal text-black font-mono font-bold text-lg hover:shadow-glow-lg transition-all duration-300 flex items-center justify-center gap-2">
-            Sign In →
+          <button
+            onClick={signInWithGoogle}
+            className="w-full px-4 py-3 rounded bg-neon-teal text-black font-mono font-bold text-lg hover:shadow-glow-lg transition-all duration-300 flex items-center justify-center gap-2"
+          >
+            Sign in with Google →
           </button>
 
           {/* Divider */}
@@ -80,8 +91,10 @@ export default function Login() {
             </div>
           </div>
 
-          {/* Guest Login */}
-          <button className="w-full px-4 py-3 rounded border border-border/50 text-foreground font-mono font-bold text-lg hover:bg-card transition-all duration-300">
+          <button
+            onClick={() => navigate("/experiments")}
+            className="w-full px-4 py-3 rounded border border-border/50 text-foreground font-mono font-bold text-lg hover:bg-card transition-all duration-300"
+          >
             Continue as Participant (Guest)
           </button>
 

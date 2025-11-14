@@ -16,8 +16,17 @@ import About from "./pages/About";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import { AnimatePresence } from "framer-motion";
+import Admin from "./pages/Admin";
+import { AuthProvider, useAuth } from "@/hooks/useAuth";
 
 const queryClient = new QueryClient();
+
+function Protected({ children, role }: { children: React.ReactNode; role?: "admin" | "user" }) {
+  const { user, role: current } = useAuth();
+  if (!user) return <Landing />;
+  if (role && current !== role) return <Dashboard />;
+  return <>{children}</>;
+}
 
 function AppContent() {
   const location = useLocation();
@@ -31,8 +40,9 @@ function AppContent() {
           <Route path="/" element={<Landing />} />
           <Route path="/features" element={<Features />} />
           <Route path="/experiments" element={<Experiments />} />
-          <Route path="/builder" element={<Builder />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/builder" element={<Protected role="user"><Builder /></Protected>} />
+          <Route path="/dashboard" element={<Protected role="user"><Dashboard /></Protected>} />
+          <Route path="/admin" element={<Protected role="admin"><Admin /></Protected>} />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
@@ -48,9 +58,11 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <AppContent />
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <AppContent />
+        </BrowserRouter>
+      </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

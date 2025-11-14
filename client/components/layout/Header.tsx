@@ -2,10 +2,12 @@ import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useAuth } from "@/hooks/useAuth";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const { user, role, logout } = useAuth();
 
   const navItems = [
     { label: "Home", href: "/" },
@@ -103,15 +105,25 @@ export function Header() {
             transition={{ duration: 0.3 }}
           >
             <Link
-              to="/dashboard"
+              to={role === "admin" ? "/admin" : "/dashboard"}
               className="px-4 py-2 rounded bg-neon-teal text-black font-mono font-semibold text-sm hover:shadow-glow transition-all duration-300"
             >
-              Get Started
+              {role === "admin" ? "Admin" : "Get Started"}
             </Link>
           </motion.div>
 
           
         </div>
+        {user && (
+          <motion.button
+            className="md:hidden text-muted-foreground"
+            onClick={logout}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Logout
+          </motion.button>
+        )}
         <motion.button
           className="md:hidden text-neon-teal"
           onClick={() => setIsOpen(!isOpen)}
@@ -167,11 +179,11 @@ export function Header() {
               transition={{ delay: navItems.length * 0.1 + 0.1 }}
             >
               <Link
-                to="/dashboard"
+                to={role === "admin" ? "/admin" : "/dashboard"}
                 onClick={() => setIsOpen(false)}
                 className="px-4 py-2 rounded bg-neon-teal text-black font-mono font-semibold text-sm hover:shadow-glow transition-all duration-300 inline-block"
               >
-                Get Started
+                {role === "admin" ? "Admin" : "Get Started"}
               </Link>
             </motion.div>
           </div>
