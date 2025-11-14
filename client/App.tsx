@@ -11,8 +11,8 @@ import Landing from "./pages/Landing";
 import Features from "./pages/Features";
 import Dashboard from "./pages/Dashboard";
 import Builder from "./pages/Builder";
-import Results from "./pages/Results";
-import Settings from "./pages/Settings";
+import Experiments from "./pages/Experiments";
+import About from "./pages/About";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import { AnimatePresence } from "framer-motion";
@@ -30,10 +30,10 @@ function AppContent() {
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Landing />} />
           <Route path="/features" element={<Features />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/experiments" element={<Experiments />} />
           <Route path="/builder" element={<Builder />} />
-          <Route path="/results" element={<Results />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

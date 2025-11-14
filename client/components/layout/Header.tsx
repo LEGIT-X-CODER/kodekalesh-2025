@@ -10,10 +10,10 @@ export function Header() {
   const navItems = [
     { label: "Home", href: "/" },
     { label: "Features", href: "/features" },
-    { label: "Dashboard", href: "/dashboard" },
+    { label: "Experiments", href: "/experiments" },
     { label: "Builder", href: "/builder" },
-    { label: "Results", href: "/results" },
-    { label: "Settings", href: "/settings" },
+    { label: "Dashboard", href: "/dashboard" },
+    { label: "About", href: "/about" },
   ];
 
   return (

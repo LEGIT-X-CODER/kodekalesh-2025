@@ -232,6 +232,40 @@ export default function Dashboard() {
             ))}
           </motion.div>
         </motion.div>
+
+        <motion.div
+          className="grid md:grid-cols-3 gap-6 mt-12"
+          variants={container}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.div variants={item} className="p-6 rounded border border-border/50 bg-card/50 backdrop-blur">
+            <h3 className="text-xl font-bold text-foreground font-mono mb-3">Participants</h3>
+            <div className="space-y-2 text-sm font-mono">
+              <div className="flex items-center justify-between"><span className="text-muted-foreground">Total</span><span>434</span></div>
+              <div className="flex items-center justify-between"><span className="text-muted-foreground">Completion rate</span><span>72%</span></div>
+              <div className="flex items-center justify-between"><span className="text-muted-foreground">Validity score</span><span>65%</span></div>
+            </div>
+          </motion.div>
+
+          <motion.div variants={item} className="p-6 rounded border border-border/50 bg-card/50 backdrop-blur">
+            <h3 className="text-xl font-bold text-foreground font-mono mb-3">Analytics</h3>
+            <div className="space-y-2 text-sm font-mono">
+              <div className="px-3 py-2 rounded border border-border/40">RT plots</div>
+              <div className="px-3 py-2 rounded border border-border/40">Accuracy graphs</div>
+              <div className="px-3 py-2 rounded border border-border/40">Heatmaps</div>
+              <button className="w-full mt-2 px-3 py-2 rounded border border-neon-teal/40 text-neon-teal hover:bg-neon-teal/10">Export CSV</button>
+            </div>
+          </motion.div>
+
+          <motion.div variants={item} className="p-6 rounded border border-border/50 bg-card/50 backdrop-blur">
+            <h3 className="text-xl font-bold text-foreground font-mono mb-3">Certificates</h3>
+            <div className="flex gap-2">
+              <span className="px-3 py-2 rounded border border-neon-teal/40 text-neon-teal font-mono text-sm">NFT Badge: Stroop</span>
+              <span className="px-3 py-2 rounded border border-neon-teal/40 text-neon-teal font-mono text-sm">NFT Badge: RT</span>
+            </div>
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );
