@@ -13,6 +13,9 @@ export default defineConfig(({ mode }) => ({
       deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "server/**"],
     },
   },
+  optimizeDeps: {
+    include: ["firebase/app", "firebase/auth", "firebase/analytics", "firebase/firestore"],
+  },
   build: {
     outDir: "dist/spa",
   },

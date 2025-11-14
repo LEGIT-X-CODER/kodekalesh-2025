@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Zap, Palette, Layers, Ban, Eye, Brain } from "lucide-react";
 
 export default function Experiments() {
@@ -84,6 +85,10 @@ export default function Experiments() {
           >
             {experiments.map((exp, idx) => {
               const Icon = exp.icon;
+              const slug = exp.title
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-|-$/g, "");
               return (
                 <motion.div
                   key={idx}
@@ -105,9 +110,12 @@ export default function Experiments() {
                   <p className="text-sm font-mono text-muted-foreground mb-4">
                     {exp.desc}
                   </p>
-                  <button className="w-full px-4 py-2 rounded bg-neon-teal text-black font-mono font-bold text-sm hover:shadow-glow transition-all">
-                    Run Experiment
-                  </button>
+                  <Link
+                    to={`/experiments/${slug}`}
+                    className="w-full px-4 py-2 rounded bg-neon-teal text-black font-mono font-bold text-sm hover:shadow-glow transition-all text-center inline-block"
+                  >
+                    View Details
+                  </Link>
                 </motion.div>
               );
             })}

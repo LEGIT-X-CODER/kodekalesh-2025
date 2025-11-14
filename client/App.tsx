@@ -18,12 +18,14 @@ import NotFound from "./pages/NotFound";
 import { AnimatePresence } from "framer-motion";
 import Admin from "./pages/Admin";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import RequireAuth from "./components/auth/RequireAuth";
+import ExperimentDetail from "./pages/ExperimentDetail";
 
 const queryClient = new QueryClient();
 
 function Protected({ children, role }: { children: React.ReactNode; role?: "admin" | "user" }) {
   const { user, role: current } = useAuth();
-  if (!user) return <Landing />;
+  if (!user) return <RequireAuth />;
   if (role && current !== role) return <Dashboard />;
   return <>{children}</>;
 }
@@ -40,6 +42,7 @@ function AppContent() {
           <Route path="/" element={<Landing />} />
           <Route path="/features" element={<Features />} />
           <Route path="/experiments" element={<Experiments />} />
+          <Route path="/experiments/:slug" element={<ExperimentDetail />} />
           <Route path="/builder" element={<Protected role="user"><Builder /></Protected>} />
           <Route path="/dashboard" element={<Protected role="user"><Dashboard /></Protected>} />
           <Route path="/admin" element={<Protected role="admin"><Admin /></Protected>} />

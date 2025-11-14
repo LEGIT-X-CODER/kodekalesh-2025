@@ -1,5 +1,9 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { db } from "@/lib/firebase";
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { useQuery } from "@tanstack/react-query";
 import {
   Plus,
   Play,
@@ -12,56 +16,58 @@ import {
 } from "lucide-react";
 
 export default function Dashboard() {
+  const { user, logout } = useAuth();
+  const userQ = useQuery({
+    queryKey: ["user", user?.uid],
+    queryFn: async () => {
+      if (!user?.uid) return null as any;
+      const snap = await getDoc(doc(db, "users", user.uid));
+      return snap.exists() ? snap.data() : null;
+    },
+    enabled: !!user?.uid,
+  });
+  const expsQ = useQuery({
+    queryKey: ["experiments", user?.uid],
+    queryFn: async () => {
+      if (!user?.uid) return [] as any[];
+      const q = query(collection(db, "experiments"), where("createdBy", "==", user.uid));
+      const snaps = await getDocs(q);
+      return snaps.docs.map((d) => ({ id: d.id, ...(d.data() as any) }));
+    },
+    enabled: !!user?.uid,
+  });
+  const experiments = (expsQ.data as any[]) ?? [];
+  const total = experiments.length;
+  const active = experiments.filter((e) => e.status === "Live").length;
+  const avgValidity = experiments.length
+    ? Math.round(
+        experiments
+          .map((e) => Number(e.validity ?? 0))
+          .reduce((a, b) => a + b, 0) / experiments.length
+      ) + "%"
+    : "—";
   const stats = [
     {
       label: "Total Experiments",
-      value: "3",
+      value: String(total || "0"),
       icon: BarChart3,
       color: "border-neon-teal",
     },
     {
       label: "Active Tests",
-      value: "2",
+      value: String(active || "0"),
       icon: Activity,
       color: "border-purple-500",
     },
     {
-      label: "Participants",
-      value: "434",
-      icon: Users,
-      color: "border-pink-500",
-    },
-    {
       label: "Avg Validity",
-      value: "65%",
+      value: avgValidity,
       icon: CheckCircle,
       color: "border-neon-teal",
     },
   ];
 
-  const experiments = [
-    {
-      id: 1,
-      name: "Stroop Color Test",
-      status: "Live",
-      participants: 245,
-      validity: 98,
-    },
-    {
-      id: 2,
-      name: "Reaction Time Study",
-      status: "Live",
-      participants: 189,
-      validity: 97,
-    },
-    {
-      id: 3,
-      name: "Memory Recall Test",
-      status: "Draft",
-      participants: 0,
-      validity: 0,
-    },
-  ];
+  const userDoc: any = userQ.data ?? null;
 
   const container = {
     hidden: { opacity: 0 },
@@ -92,12 +98,20 @@ export default function Dashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground font-mono mb-2">
-            Dashboard
-          </h1>
-          <p className="text-muted-foreground font-mono">
-            Manage your cognitive experiments
-          </p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground font-mono mb-2">Dashboard</h1>
+              <p className="text-muted-foreground font-mono">Manage your cognitive experiments</p>
+            </div>
+            {user && (
+              <button
+                onClick={logout}
+                className="px-4 py-2 rounded bg-red-500 text-white font-mono font-semibold text-sm hover:bg-red-600 transition-all duration-300"
+              >
+                Logout
+              </button>
+            )}
+          </div>
         </motion.div>
 
         {/* Stats Grid */}
@@ -169,7 +183,7 @@ export default function Dashboard() {
           >
             {experiments.map((exp) => (
               <motion.div
-                key={exp.id}
+                key={String(exp.id)}
                 variants={item}
                 className="p-6 rounded border border-border/50 bg-card/50 backdrop-blur hover:border-neon-teal/50 transition-all duration-300 group"
               >
@@ -184,9 +198,9 @@ export default function Dashboard() {
                   >
                     {exp.status === "Live" ? "● Live" : "◐ Draft"}
                   </span>
-                  <span className="text-muted-foreground font-mono text-xs">
-                    ID: #{exp.id}
-                  </span>
+                  {exp.id && (
+                    <span className="text-muted-foreground font-mono text-xs">ID: #{String(exp.id)}</span>
+                  )}
                 </div>
 
                 {/* Experiment Name */}
@@ -195,34 +209,29 @@ export default function Dashboard() {
                 </h3>
 
                 {/* Stats */}
-                <div className="space-y-2 mb-6 text-sm font-mono">
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">
-                      ⊙ {exp.participants} participants
-                    </span>
+                  <div className="space-y-2 mb-6 text-sm font-mono">
+                    {Number(exp.validity ?? 0) > 0 && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-muted-foreground">
+                          ✓ {exp.validity}% validity
+                        </span>
+                      </div>
+                    )}
                   </div>
-                  {exp.validity > 0 && (
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        ✓ {exp.validity}% validity
-                      </span>
-                    </div>
-                  )}
-                </div>
 
                 {/* Action Buttons */}
                 <div className="flex gap-2">
-                  <button className="flex-1 px-3 py-2 rounded border border-neon-teal/30 text-neon-teal hover:bg-neon-teal/10 transition-all font-mono text-sm font-bold flex items-center justify-center gap-2 group/btn">
+                  <Link to="/experiments" className="flex-1 px-3 py-2 rounded border border-neon-teal/30 text-neon-teal hover:bg-neon-teal/10 transition-all font-mono text-sm font-bold flex items-center justify-center gap-2 group/btn">
                     <Play
                       size={16}
                       className="group-hover/btn:translate-x-0.5 transition-transform"
                     />
                     Run
-                  </button>
-                  <button className="flex-1 px-3 py-2 rounded border border-muted/30 text-muted-foreground hover:border-muted/60 transition-all font-mono text-sm font-bold flex items-center justify-center gap-2">
+                  </Link>
+                  <Link to="/builder" className="flex-1 px-3 py-2 rounded border border-muted/30 text-muted-foreground hover:border-muted/60 transition-all font-mono text-sm font-bold flex items-center justify-center gap-2">
                     <Edit size={16} />
                     Edit
-                  </button>
+                  </Link>
                   <button className="flex-1 px-3 py-2 rounded border border-muted/30 text-muted-foreground hover:border-destructive/60 hover:text-destructive transition-all font-mono text-sm font-bold flex items-center justify-center gap-2">
                     <Trash2 size={16} />
                     Delete
@@ -232,7 +241,6 @@ export default function Dashboard() {
             ))}
           </motion.div>
         </motion.div>
-
         <motion.div
           className="grid md:grid-cols-3 gap-6 mt-12"
           variants={container}
@@ -240,11 +248,11 @@ export default function Dashboard() {
           animate="visible"
         >
           <motion.div variants={item} className="p-6 rounded border border-border/50 bg-card/50 backdrop-blur">
-            <h3 className="text-xl font-bold text-foreground font-mono mb-3">Participants</h3>
+            <h3 className="text-xl font-bold text-foreground font-mono mb-3">Profile</h3>
             <div className="space-y-2 text-sm font-mono">
-              <div className="flex items-center justify-between"><span className="text-muted-foreground">Total</span><span>434</span></div>
-              <div className="flex items-center justify-between"><span className="text-muted-foreground">Completion rate</span><span>72%</span></div>
-              <div className="flex items-center justify-between"><span className="text-muted-foreground">Validity score</span><span>65%</span></div>
+              <div className="flex items-center justify-between"><span className="text-muted-foreground">Name</span><span>{(userDoc?.displayName ?? user?.displayName) ?? "—"}</span></div>
+              <div className="flex items-center justify-between"><span className="text-muted-foreground">Email</span><span>{(userDoc?.email ?? user?.email) ?? "—"}</span></div>
+              <div className="flex items-center justify-between"><span className="text-muted-foreground">UID</span><span className="truncate max-w-[180px]">{user?.uid ?? "—"}</span></div>
             </div>
           </motion.div>
 

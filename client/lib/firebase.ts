@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
+import { getFirestore } from "firebase/firestore";
 
 const app = initializeApp({
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -13,7 +14,16 @@ const app = initializeApp({
 });
 
 const auth = getAuth(app);
-const analytics = getAnalytics(app);
+const analytics = (() => {
+  try {
+    return typeof window !== "undefined" && import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+      ? getAnalytics(app)
+      : null;
+  } catch {
+    return null;
+  }
+})();
 const googleProvider = new GoogleAuthProvider();
+const db = getFirestore(app);
 
-export { app, auth, analytics, googleProvider };
+export { app, auth, analytics, googleProvider, db };
